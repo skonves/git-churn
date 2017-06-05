@@ -1,13 +1,22 @@
 language: go
-
 go:
-  - 1.x
-  - 1.6
-  - 1.7.x
-  - master
-
+- 1.7.x
 install:
-  - go get github.com/stretchr/testify
-
+- go get github.com/stretchr/testify
 script:
-  - go test ./src
+- go test ./src
+- env GOOS=windows GOARCH=arm64 go build src/churn.go
+deploy:
+  provider: releases
+  api_key:
+    secure: "JTgpv9EJcdOgANR+8Z7BQafqxJize0sWFuUGWIvm0Rw0GE/7lzclZ40YuNwzWjtu/kFaQkIF2OkU8AXGNIEX16Kmh+VYR98mFF09gJMryermnPPZPwBxL1abtx+Ll9oD2IFvYahX6CPFyALSYVn1y5zCW4BJoUJ/lvVlkJJ28rH+eBFK6PUlr9iN1nXQZUXy16dKfGIYpGGugOIWxXfoJQHRAMjGg6qwbq9c59Jwe4ojpZeylmnW+hUhcqk+RvlUGEkEdrxEa2iWuXQ/tcdEQe7r1nFIT9bzqL60639KRtHDoNMXS1QR2NTeyaRrB+ALhR5VcA4P+fidnzLzrDfwmCXiKSt/mdd73SHBAqFBOIf1Erspdhfr7Kr8cx/frWKLRgpUw+ctzgLrLDCRIQLmcjmUV+PSbqGMRJg0tgW+HKdjiaVfTVurE82M67OI2SvS8ElbIYH3WidAB6iKx/nt+sOMO99nU7Hob7EDPAdvxF/7D53VLC2srLoT2AIDuEPCHiwmzPvWTajJtHn03C0ImWEa4Vpw5ZX3Dd7cpPD6Lvnq6JQ2HVOQSKkuw6s+0zlxPGoZoIydF5cs90IUlzcth8F6AjQtVLT0Wq6Itxhwob5bPMcGhUvk1Y1pjXT9Z2XiykGHF/eAwan+8RkfmSu0pq1VIKwq9jmAt7TnPTtS/qc="
+  file: churn.exe
+  skip_cleanup: true
+  on:
+    tags: true
+
+
+
+
+
+
