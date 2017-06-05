@@ -1,10 +1,13 @@
 language: go
 go:
 - 1.7.x
+before_install:
+- go get github.com/mattn/goveralls
 install:
 - go get github.com/stretchr/testify
 script:
-- go test ./src
+# - go test ./src
+- $HOME/gopath/bin/goveralls -service=travis-ci
 - env GOOS=linux   GOARCH=386   go build -o bin/churn-linux-x86       src/churn.go
 - env GOOS=linux   GOARCH=amd64 go build -o bin/churn-linux-x64       src/churn.go
 - env GOOS=darwin  GOARCH=386   go build -o bin/churn-mac-x86         src/churn.go
