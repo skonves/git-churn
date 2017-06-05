@@ -1,16 +1,16 @@
 language: go
 go:
 - 1.7.x
-env:
-- GOOS=linux GOARCH=386
-- GOOS=linux GOARCH=amd64
-- GOOS=windows GOARCH=386 GOEXT=.exe
-- GOOS=windows GOARCH=amd64 GOEXT=.exe
 install:
 - go get github.com/stretchr/testify
 script:
 - go test ./src
-- go build -o bin/churn-$GOOS-$GOARCH$GOEXT src/churn.go
+- env GOOS=linux   GOARCH=386   go build -o bin/churn-linux-x86       src/churn.go
+- env GOOS=linux   GOARCH=amd64 go build -o bin/churn-linux-x64       src/churn.go
+- env GOOS=darwin  GOARCH=386   go build -o bin/churn-mac-x86.exe     src/churn.go
+- env GOOS=darwin  GOARCH=amd64 go build -o bin/churn-mac-x64.exe     src/churn.go
+- env GOOS=windows GOARCH=386   go build -o bin/churn-windows-x86.exe src/churn.go
+- env GOOS=windows GOARCH=amd64 go build -o bin/churn-windows-x64.exe src/churn.go
 deploy:
   provider: releases
   api_key:
