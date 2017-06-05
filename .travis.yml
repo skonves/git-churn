@@ -7,8 +7,8 @@ script:
 - go test ./src
 - env GOOS=linux   GOARCH=386   go build -o bin/churn-linux-x86       src/churn.go
 - env GOOS=linux   GOARCH=amd64 go build -o bin/churn-linux-x64       src/churn.go
-- env GOOS=darwin  GOARCH=386   go build -o bin/churn-mac-x86.exe     src/churn.go
-- env GOOS=darwin  GOARCH=amd64 go build -o bin/churn-mac-x64.exe     src/churn.go
+- env GOOS=darwin  GOARCH=386   go build -o bin/churn-mac-x86         src/churn.go
+- env GOOS=darwin  GOARCH=amd64 go build -o bin/churn-mac-x64         src/churn.go
 - env GOOS=windows GOARCH=386   go build -o bin/churn-windows-x86.exe src/churn.go
 - env GOOS=windows GOARCH=amd64 go build -o bin/churn-windows-x64.exe src/churn.go
 deploy:
