@@ -6,14 +6,14 @@ before_install:
 install:
 - go get github.com/stretchr/testify
 script:
-# - go test ./src
 - $HOME/gopath/bin/goveralls -service=travis-ci
-- env GOOS=linux   GOARCH=386   go build -o bin/churn-linux-x86       src/churn.go
-- env GOOS=linux   GOARCH=amd64 go build -o bin/churn-linux-x64       src/churn.go
-- env GOOS=darwin  GOARCH=386   go build -o bin/churn-mac-x86         src/churn.go
-- env GOOS=darwin  GOARCH=amd64 go build -o bin/churn-mac-x64         src/churn.go
-- env GOOS=windows GOARCH=386   go build -o bin/churn-windows-x86.exe src/churn.go
-- env GOOS=windows GOARCH=amd64 go build -o bin/churn-windows-x64.exe src/churn.go
+before_deploy:
+- env GOOS=linux   GOARCH=386   go build -o bin/churn-linux-x86-$TRAVIS_TAG       src/churn.go
+- env GOOS=linux   GOARCH=amd64 go build -o bin/churn-linux-x64-$TRAVIS_TAG       src/churn.go
+- env GOOS=darwin  GOARCH=386   go build -o bin/churn-mac-x86-$TRAVIS_TAG         src/churn.go
+- env GOOS=darwin  GOARCH=amd64 go build -o bin/churn-mac-x64-$TRAVIS_TAG         src/churn.go
+- env GOOS=windows GOARCH=386   go build -o bin/churn-windows-x86-$TRAVIS_TAG.exe src/churn.go
+- env GOOS=windows GOARCH=amd64 go build -o bin/churn-windows-x64-$TRAVIS_TAG.exe src/churn.go
 deploy:
   provider: releases
   api_key:
