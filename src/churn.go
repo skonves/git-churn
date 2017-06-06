@@ -1,6 +1,7 @@
 package main
 import "fmt"
 import "os/exec"
+import "strconv"
 import "strings"
 
 func main() {
@@ -112,6 +113,41 @@ func GetHunks(diff string) []string {
     }
 
     return hunks
+}
+
+func ParseHunk(hunk string) Hunk {
+    x := strings.Split(hunk, " ")
+
+    a := strings.Split(x[1][1:], ",")
+    b := strings.Split(x[2][1:], ",")
+
+    body := hunk[strings.Index(hunk, "\n") + 1:]
+
+    aStart, aStartErr := strconv.Atoi(a[0])
+    aEnd,   aEndErr   := strconv.Atoi(a[1])
+    bStart, bStartErr := strconv.Atoi(b[0])
+    bEnd,   bEndErr   := strconv.Atoi(b[1])
+
+    if aStartErr != nil || aEndErr != nil || bStartErr != nil || bEndErr != nil {
+
+    }
+
+    return Hunk{
+        Range{aStart, aEnd},
+        Range{bStart, bEnd},
+        body,
+    }
+}
+
+type Hunk struct {
+    A Range
+    B Range
+    Body string
+}
+
+type Range struct {
+    Offset int
+    Length int
 }
 
 func Insert(matrix [][]bool, record []bool, i int) [][]bool {
