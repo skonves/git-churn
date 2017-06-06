@@ -5,32 +5,30 @@ import (
   "github.com/stretchr/testify/assert"
 )
 
-func TestAddDiff(t *testing.T) {
-    // ARRANGE
-    diff :=
-`asdfasdf
-@@ -1,1 +1,1 @@ package main
- asdf
-@@ -1,1 +1,1 @@ package main
- asdf
-`
+func TestGetHunks(t *testing.T) {
+
+    // ARRANGEÏ
+    tables := []struct {
+        condition string;        diff string
+    } {
+        { "trailing newline",    "aaa\n@@ -1,1 +1,1 @@ bbb\n ccc\n@@ -2,2 +2,2 @@ ddd\n eee\n" }, 
+        { "no trailing newline", "aaa\n@@ -1,1 +1,1 @@ bbb\n ccc\n@@ -2,2 +2,2 @@ ddd\n eee" },
+    }
 
     expectedHunks := []string {
-`@@ -1,1 +1,1 @@ package main
- asdf`,
- `@@ -1,1 +1,1 @@ package main
- asdf` }
+        "@@ -1,1 +1,1 @@ bbb\n ccc",
+        "@@ -2,2 +2,2 @@ ddd\n eee",
+    }
 
-    // ACT
-    hunks := GetHunks(diff)
+    for _, table := range tables {
+        // ACT
+        hunks := GetHunks(table.diff)
 
-    // ASSERT
-    assert.Equal(t, len(hunks), len(expectedHunks), "wrong number of elements")
+        // ASSERT
+        assert.Equal(t, len(expectedHunks), len(hunks), table.condition + ": wrong number of elements")
 
-    for i, hunk := range hunks {
-        t.Log(hunk)
-        if hunk != expectedHunks[i] {
-            t.Error("wrong element")
+        for i, hunk := range hunks {
+            assert.Equal(t, expectedHunks[i], hunk, table.condition + ": wrong element")
         }
     }
 }
