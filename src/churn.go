@@ -1,6 +1,5 @@
 package main
 import "fmt"
-import "strconv"
 import "os/exec"
 import "strings"
 
@@ -15,10 +14,7 @@ func main() {
     // fmt.Println(matrix)
 
     hunks := GetHunks(diff)
-    s := GetHunkStart(hunks[0])
-    fmt.Println(s)
-    // fmt.Println()
-    // fmt.Println(hunks)
+    fmt.Println(hunks)
 }
 
 func MakeMatrix(initialLineCount int) [][]bool {
@@ -53,12 +49,6 @@ func GetChanges(hunks []string) map[int]string {
 
 
     return res
-}
-
-func GetHunkStart(hunk string) int {
-    x := strings.Split(hunk, ",")
-    n, _ := strconv.Atoi(x[0][4:])
-    return n
 }
 
 func AddHunk(matrix [][]bool, hunk string) [][]bool {
