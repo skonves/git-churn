@@ -100,19 +100,16 @@ func GetHunks(diff string) []string {
     lines := strings.Split(diff, linebreak)
 
     hunkStart := 0
-    hunkEnd := 0
 
-    for i, line := range lines {
-        isStartOfHunk := strings.HasPrefix(line, "@@")
-        isEndOfDiff := i == len(lines) - 1
+    for i := range lines {
+        isEndOfHunk := i == len(lines) - 1 || strings.HasPrefix(lines[i+1], "@@")
 
-        if isStartOfHunk || isEndOfDiff {
+        if isEndOfHunk {
             if hunkStart > 0 {
-                // Build hunk
-                if isEndOfDiff {
-                    hunkEnd = i
-                } else {
-                    hunkEnd = i - 1
+                hunkEnd := i + 1
+
+                if len(lines[i]) == 0 {
+                    hunkEnd -= 1
                 }
 
                 hunk := strings.Join(lines[hunkStart:hunkEnd], linebreak)
@@ -120,7 +117,7 @@ func GetHunks(diff string) []string {
                 // Append hunk
                 hunks = append(hunks, hunk)
             }
-            hunkStart = i
+            hunkStart = i + 1
         }
     }
 
