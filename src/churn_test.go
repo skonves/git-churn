@@ -44,6 +44,4 @@ func TestParseHunk(t *testing.T) {
 
     // ASSERT
     assert.Equal(t, expectedHunk, result, "fail!")
-
-    result.A.Offset
 }
