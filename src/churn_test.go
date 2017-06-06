@@ -32,3 +32,18 @@ func TestGetHunks(t *testing.T) {
         }
     }
 }
+
+func TestParseHunk(t *testing.T) {
+    // ARRANGE
+    hunkStr := "@@ -1,2 +3,5 @@ location\n text\n text"
+
+    expectedHunk := Hunk{ Range{1, 2}, Range{3, 5}, " text\n text"}
+
+    // ACT
+    result := ParseHunk(hunkStr)
+
+    // ASSERT
+    assert.Equal(t, expectedHunk, result, "fail!")
+
+    result.A.Offset
+}
