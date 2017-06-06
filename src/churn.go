@@ -124,24 +124,63 @@ func ParseHunk(hunk string) Hunk {
     body := hunk[strings.Index(hunk, "\n") + 1:]
 
     aStart, aStartErr := strconv.Atoi(a[0])
-    aEnd,   aEndErr   := strconv.Atoi(a[1])
+    aLen,   aLenErr   := strconv.Atoi(a[1])
     bStart, bStartErr := strconv.Atoi(b[0])
-    bEnd,   bEndErr   := strconv.Atoi(b[1])
+    bLen,   bLenErr   := strconv.Atoi(b[1])
 
-    if aStartErr != nil || aEndErr != nil || bStartErr != nil || bEndErr != nil {
+    if aStartErr != nil || aLenErr != nil || bStartErr != nil || bLenErr != nil {
 
     }
 
+    dels := ParseDels(aStart, body)
+    adds := ParseAdds(bStart, body)
+
     return Hunk{
-        Range{aStart, aEnd},
-        Range{bStart, bEnd},
+        Range{aStart, aLen},
+        Range{bStart, bLen},
+        dels,
+        adds,
         body,
     }
 }
 
+func ParseAdds(start int, body string) []int {
+    adds := make([]int, 0)
+
+    n := start
+    for _, line := range strings.Split(body, "\n") {
+        if strings.HasPrefix(line, " ") {
+            n++
+        } else if strings.HasPrefix(line, "+") {
+            adds = append(adds, n)
+            n++
+        }
+    }
+
+    return adds
+}
+
+func ParseDels(start int, body string) []int {
+    dels := make([]int, 0)
+
+    n := start
+    for _, line := range strings.Split(body, "\n") {
+        if strings.HasPrefix(line, " ") {
+            n++
+        } else if strings.HasPrefix(line, "-") {
+            dels = append(dels, n)
+            n++
+        }
+    }
+
+    return dels
+}
+
 type Hunk struct {
-    A Range
-    B Range
+    Lhs Range
+    Rhs Range
+    Adds []int // Line numbers on lhs that are removed
+    Dels []int // Line numbers on rhs that are new
     Body string
 }
 
