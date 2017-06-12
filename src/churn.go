@@ -5,27 +5,56 @@ import "strconv"
 import "strings"
 
 func main() {
-    filename := "src/exec.go"
+    filename := "src/churn.go"
     shas := GetShas(filename)
+    //fmt.Println(shas)
     diff := GetDiff(filename, shas[0], shas[1])
 
-    // ct := GetFileLineCount(filename, shas[0])
-    // matrix := MakeMatrix(ct)
+    ct := GetFileLineCount(filename, shas[0])
+    matrix := MakeMatrix(ct)
+    matrix = DupLastRow(matrix)
+
+    fmt.Println(matrix)
     // matrix = AddDiff(matrix, diff)
     // fmt.Println(matrix)
 
     hunks := GetHunks(diff)
-    fmt.Println(hunks)
+
+    for _, h := range hunks {
+        p := ParseHunk(h)
+        fmt.Println(p)
+    }
+
+    //fmt.Println(hunks)
 }
 
 func MakeMatrix(initialLineCount int) [][]bool {
     matrix := make([][]bool, initialLineCount)
 
-    for i := 0; i < len(matrix); i++ {
+    for i := range matrix {
         matrix[i] = []bool{true}
     }
 
     return matrix
+}
+
+func DupLastRow(matrix [][]bool) [][]bool {
+    width := len(matrix[0])
+    for i := range matrix {
+        matrix[i] = append(matrix[i], matrix[i][width-1])
+    }
+    return matrix
+}
+
+func Apply(matrix [][]bool, hunks []Hunk) [][]bool {
+    // set rhs removed lines to false
+    width := len(matrix[0])
+    lhsrow := 1 // TODO: ensure diffs use 1-based indecies
+    for i, row := range matrix {
+        for _, hunk := range hunks {
+
+        }
+    }
 }
 
 func AddDiff(matrix [][]bool, diff string) [][]bool {
@@ -42,14 +71,6 @@ func AddDiff(matrix [][]bool, diff string) [][]bool {
     }
 
     return matrix
-}
-
-func GetChanges(hunks []string) map[int]string {
-    res := make(map[int]string);
-
-
-
-    return res
 }
 
 func AddHunk(matrix [][]bool, hunk string) [][]bool {
@@ -179,8 +200,8 @@ func ParseDels(start int, body string) []int {
 type Hunk struct {
     Lhs Range
     Rhs Range
-    Adds []int // Line numbers on lhs that are removed
-    Dels []int // Line numbers on rhs that are new
+    Adds []int // Line numbers on rhs that are new
+    Dels []int // Line numbers on lhs that are removed
     Body string
 }
 
@@ -193,7 +214,7 @@ func Insert(matrix [][]bool, record []bool, i int) [][]bool {
     return append(append(matrix[:i], record), matrix[i+1:]...)
 }
 
-func GetShas(filename string) []string {
+func GetShas(filename string) []string { // TODO: add start and end date params
     cmd := exec.Command("git", "log", "--pretty=format:%h", "--", filename)
     stdout, err := cmd.Output()
 
