@@ -77,21 +77,21 @@ func TestParseDels(t *testing.T) {
 func TestApplyDels(t *testing.T) {
     // ARRANGE
     matrix := [][]bool{
-        []bool{ true,  true  },
+        []bool{ true,  true  }, // line 1 - Removed
         []bool{ false, false },
-        []bool{ true,  true  },
-        []bool{ true,  true  },
-        []bool{ true,  true  },
+        []bool{ true,  true  }, // line 2
+        []bool{ true,  true  }, // line 3 - Removed
+        []bool{ true,  true  }, // line 4
     }
 
     dels := []int{1, 3}
 
     expectedResult := [][]bool{
-        []bool{ true,  false }, // line 1 - Removed
+        []bool{ true,  false },
         []bool{ false, false },
+        []bool{ true,  true  }, // line 1
+        []bool{ true,  false },
         []bool{ true,  true  }, // line 2
-        []bool{ true,  false }, // line 3 - Removed
-        []bool{ true,  true  }, // line 4
     }
 
     // ACT
@@ -106,9 +106,9 @@ func TestApplyAdds(t *testing.T) {
     matrix := [][]bool{
         []bool{ true,  false },
         []bool{ false, false },
-        []bool{ true,  true  },
+        []bool{ true,  true  }, // line 1
         []bool{ true,  false },
-        []bool{ true,  true  },
+        []bool{ true,  true  }, // line 2
     }
 
     adds := []int{1, 3}
@@ -116,11 +116,11 @@ func TestApplyAdds(t *testing.T) {
     expectedResult := [][]bool{
         []bool{ true,  false },
         []bool{ false, false },
-        []bool{ false, true  }, // Added
-        []bool{ true,  true  },
+        []bool{ false, true  }, // line 1 - Added
+        []bool{ true,  true  }, // line 2
         []bool{ true,  false },
-        []bool{ false, true  }, // Added
-        []bool{ true,  true  },
+        []bool{ false, true  }, // line 3 - Added
+        []bool{ true,  true  }, // line 4
     }
 
     // ACT
