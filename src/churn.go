@@ -47,14 +47,16 @@ func DupLastRow(matrix [][]bool) [][]bool {
 }
 
 func Apply(matrix [][]bool, hunks []Hunk) [][]bool {
-    // set rhs removed lines to false
-    width := len(matrix[0])
-    lhsrow := 1 // TODO: ensure diffs use 1-based indecies
-    for i, row := range matrix {
-        for _, hunk := range hunks {
+    // // set rhs removed lines to false
+    // width := len(matrix[0])
+    // lhsrow := 1 // TODO: ensure diffs use 1-based indecies
+    // for i, row := range matrix {
+    //     for _, hunk := range hunks {
 
-        }
-    }
+    //     }
+    // }
+
+    return matrix
 }
 
 func AddDiff(matrix [][]bool, diff string) [][]bool {
