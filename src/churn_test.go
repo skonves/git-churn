@@ -73,3 +73,59 @@ func TestParseDels(t *testing.T) {
     // ASSERT
     assert.Equal(t, expectedDels, result, "fail!")
 }
+
+func TestApplyDels(t *testing.T) {
+    // ARRANGE
+    matrix := [][]bool{
+        []bool{ true,  true  },
+        []bool{ false, false },
+        []bool{ true,  true  },
+        []bool{ true,  true  },
+        []bool{ true,  true  },
+    }
+
+    dels := []int{1, 3}
+
+    expectedResult := [][]bool{
+        []bool{ true,  false }, // line 1 - Removed
+        []bool{ false, false },
+        []bool{ true,  true  }, // line 2
+        []bool{ true,  false }, // line 3 - Removed
+        []bool{ true,  true  }, // line 4
+    }
+
+    // ACT
+    result := ApplyDels(matrix, dels)
+
+    // ASSERT
+    assert.Equal(t, expectedResult, result, "fail")
+}
+
+func TestApplyAdds(t *testing.T) {
+    // ARRANGE
+    matrix := [][]bool{
+        []bool{ true,  false },
+        []bool{ false, false },
+        []bool{ true,  true  },
+        []bool{ true,  false },
+        []bool{ true,  true  },
+    }
+
+    adds := []int{1, 3}
+
+    expectedResult := [][]bool{
+        []bool{ true,  false },
+        []bool{ false, false },
+        []bool{ false, true  }, // Added
+        []bool{ true,  true  },
+        []bool{ true,  false },
+        []bool{ false, true  }, // Added
+        []bool{ true,  true  },
+    }
+
+    // ACT
+    result := ApplyAdds(matrix, adds)
+
+    // ASSERT
+    assert.Equal(t, expectedResult, result, "fail")
+}
