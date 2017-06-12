@@ -7,23 +7,32 @@ import "strings"
 func main() {
     filename := "src/churn.go"
     shas := GetShas(filename)
-    //fmt.Println(shas)
     diff := GetDiff(filename, shas[0], shas[1])
 
     ct := GetFileLineCount(filename, shas[0])
     matrix := MakeMatrix(ct)
     matrix = DupLastRow(matrix)
 
+    dels := []int{}
+    adds := []int{}
+    for _, hunk := range GetHunks(diff) {
+        hunk := ParseHunk(hunk)
+        dels = append(dels, hunk.Dels...)
+        adds = append(adds, hunk.Adds...)
+    }
+
+    matrix = ApplyDels(matrix, dels)
+
     fmt.Println(matrix)
     // matrix = AddDiff(matrix, diff)
     // fmt.Println(matrix)
 
-    hunks := GetHunks(diff)
+    // hunks := GetHunks(diff)
 
-    for _, h := range hunks {
-        p := ParseHunk(h)
-        fmt.Println(p)
-    }
+    // for _, h := range hunks {
+    //     p := ParseHunk(h)
+    //     fmt.Println(p)
+    // }
 
     //fmt.Println(hunks)
 }
@@ -46,15 +55,60 @@ func DupLastRow(matrix [][]bool) [][]bool {
     return matrix
 }
 
-func Apply(matrix [][]bool, hunks []Hunk) [][]bool {
-    // // set rhs removed lines to false
-    // width := len(matrix[0])
-    // lhsrow := 1 // TODO: ensure diffs use 1-based indecies
-    // for i, row := range matrix {
-    //     for _, hunk := range hunks {
+func ApplyDels(matrix [][]bool, dels []int) [][]bool {
+    lhscol := len(matrix[0]) - 2
+    rhscol := lhscol + 1
+    lhsrow := 1
 
-    //     }
-    // }
+    for i, row := range matrix {
+        if row[lhscol] == true {
+            for _, del := range dels {
+                if lhsrow == del {
+                    matrix[i][rhscol] = false
+                }
+            }
+            lhsrow += 1
+        }
+    }
+
+    return matrix
+}
+
+func ApplyAdds(matrix [][]bool, adds []int) [][]bool {
+    lhscol := len(matrix[0]) - 2
+    rhscol := lhscol + 1
+    rhsrow := 1
+
+    width := len(matrix[0])
+
+    for i := 0; i < len(matrix); i++ {
+        //fmt.Println(i, rhsrow)
+        row := matrix[i]
+        if row[rhscol] == true {
+            for _, add := range adds {
+                if rhsrow == add {
+                    // Insert row
+
+                    addedRow :=  make([]bool, width)
+                    addedRow[rhscol] = true
+
+                    prior := matrix[:i]
+                    after := matrix[i:]
+
+                    fmt.Println(prior, " <= ", len(prior), " : ", addedRow, " : ", len(after), " => ", after)
+
+                    matrix = append(prior, append([][]bool{addedRow}, after...)...)
+
+                    fmt.Println(matrix)
+                    fmt.Println("")
+                    //rhsrow += 1
+
+                    //matrix[i][rhscol] = false
+                }
+            }
+            rhsrow += 1
+        }
+    }
 
     return matrix
 }
