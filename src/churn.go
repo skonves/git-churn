@@ -22,19 +22,9 @@ func main() {
     }
 
     matrix = ApplyDels(matrix, dels)
+    matrix = ApplyAdds(matrix, adds)    
 
     fmt.Println(matrix)
-    // matrix = AddDiff(matrix, diff)
-    // fmt.Println(matrix)
-
-    // hunks := GetHunks(diff)
-
-    // for _, h := range hunks {
-    //     p := ParseHunk(h)
-    //     fmt.Println(p)
-    // }
-
-    //fmt.Println(hunks)
 }
 
 func MakeMatrix(initialLineCount int) [][]bool {
@@ -87,23 +77,9 @@ func ApplyAdds(matrix [][]bool, adds []int) [][]bool {
         if row[rhscol] == true {
             for _, add := range adds {
                 if rhsrow == add {
-                    // Insert row
-
                     addedRow :=  make([]bool, width)
                     addedRow[rhscol] = true
-
-                    prior := matrix[:i]
-                    after := matrix[i:]
-
-                    fmt.Println(prior, " <= ", len(prior), " : ", addedRow, " : ", len(after), " => ", after)
-
-                    matrix = append(prior, append([][]bool{addedRow}, after...)...)
-
-                    fmt.Println(matrix)
-                    fmt.Println("")
-                    //rhsrow += 1
-
-                    //matrix[i][rhscol] = false
+                    matrix = append(matrix[:i], append([][]bool{addedRow}, matrix[i:]...)...)
                 }
             }
             rhsrow += 1
